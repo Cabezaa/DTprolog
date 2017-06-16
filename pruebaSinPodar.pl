@@ -1,6 +1,6 @@
 %Sin Podar
-crearArbol(Atributos, Datos):-
-    id3( Atributos, Datos, ArbolSalida ),!,
+crearArbol(Atributos,Datos):-
+    id3( Atributos, Datos, ArbolSalida ),print("SALI EXITOSO"),!,
     assert(ArbolSalida), print("Se ha creado el arbol correctamente"),nl.
 
 utilizarArbol(DatosTest1):-
@@ -51,7 +51,8 @@ id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = leaf( Categ).
 
 
 id3( Atributos, Datos, ArbolSalida ) :-
-  buscarRaiz( Atributos, Datos, BestAttr, BestDataPartition ),
+print("Entre en ID3"),nl,
+  buscarRaiz( Atributos, Datos, BestAttr, BestDataPartition ), print("Busque la raiz"),nl,
 	subtract(Atributos,[(BestAttr,_)],NuevaLista),
 	print("ESTAMOS QUITANDO A: "),
 	print(BestAttr),nl,
@@ -62,11 +63,21 @@ id3( Atributos, Datos, ArbolSalida ) :-
 
 % Devuelve el mejor atributo y la mejor particion de datos
 buscarRaiz( ListaAtributos, Datos, MejorAtributo, MejorParticion ) :-
+  %print("ENTRE A BUSCAR RAIZ"),nl,
   findall( (Atributo, Particion, Entropia),                                                     % Template utilizado
-           ( member( ( Atributo, Valores ), ListaAtributos ),                                   % For Eeach sobre la lista, creando particiones
-           partition( Datos, Atributo, Valores, Particion, Entropia ) ), ParticionesTemplate),  % Asignamos segun el template
+           ( member( ( Atributo, Valores ), ListaAtributos ),
+           %print("Atributo :"),print(Atributo),nl,                                 % For Eeach sobre la lista, creando particiones
+           %print("Valores :"),print(Valores),nl,                                 % For Eeach sobre la lista, creando particiones
+           partition( Datos, Atributo, Valores, Particion, Entropia ),
+           print("############################################"),nl,
+           print("Atributo "), print(Atributo),print(" Entr: "),print(Entropia),nl ), ParticionesTemplate),  % Asignamos segun el template
+
+           %print("Sali EXITOSO del find all"),nl,
+           %print("Datos: "),print(Datos),nl,
            cantPos(Datos, CantPositivos),
            length(Datos,CantDatos),
+          % print("CantPositivos: "),print(CantPositivos),nl,
+          % print("CantDatos :"),print(CantDatos),nl,
            EntropiaGeneral is CantPositivos/CantDatos,                                          % Calculamos la Entropia General para calcular la ganancia
            nth0(0, ParticionesTemplate, PrimerParticion),                                       % Asignamos a la primera particion como una auxiliar para el calc
            seleccionarMejorGanancia(EntropiaGeneral, ParticionesTemplate, PrimerParticion, MejorAtributo, MejorParticion).
@@ -80,12 +91,13 @@ partition( Data, Attr,
   ( SubData = [ ]
     -> partition( Data, Attr, RestValues , Partition, Entropy )
     ;
-    entropia( SubData, SubEntropy ),
+    entropia( SubData, SubEntropy ), % Sexo masculino
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"),print("SubEntropy de "),print(Attr),print(" ES "),print(SubEntropy),nl,
     length(Data,FilasTotales),
     partition( Data, Attr, RestValues , RestPartition, RestEntropy ),
     Partition = [ OnePosAttrValue-SubData | RestPartition ],
     length(SubData,FilasCalculadas),
-    NuevaEntropia is (FilasCalculadas/FilasTotales) * SubEntropy,
+    NuevaEntropia is -(FilasCalculadas/FilasTotales) * SubEntropy,
     Entropy is NuevaEntropia + RestEntropy ).
 
 
@@ -110,19 +122,29 @@ filasValorAtributo( [ (V,Datum) | OtrosDatos ], Attr, AttrValue, SubData ) :-
 entropia( Data, Entropy ) :-
   cantPos( Data, Pnum ),
   length( Data, Dnum ),
+  %print("Longitud "), print(Dnum),nl,
   Pp is Pnum / Dnum,
   Pn is 1 - Pp,
+  %print("PP "), print(Pp),nl,
+  %print("Pn "), print(Pn),nl,
   (Pp > 0 ->
   PpLogPp is Pp*(log10(Pp)/log10(2)) ;
   PpLogPp = 0 ),
   (Pn > 0 ->
-  PnLogPn is Pn*(log10(Pn)/log10(2)),Entropy is - ( PpLogPp + PnLogPn ) ;
-  PnLogPn = 0 , Entropy is - ( PpLogPp + PnLogPn )).
+      PnLogPn is Pn*(log10(Pn)/log10(2)),
+      %print("#### PnLogPn es "),print(PnLogPn),nl,
+      %print("#### PpLogPp es "),print(PpLogPp),nl,
+      Entropy is - ( PpLogPp + PnLogPn )
+      ;
+      PnLogPn = 0,
+      %print("#### PnLogPn es "),print(PnLogPn),nl,
+      %print("#### PpLogPp es "),print(PpLogPp),nl,
+      Entropy is - ( PpLogPp + PnLogPn )).
 
 
 
 cantPos( [ ], 0 ).
-cantPos( [ (p,_) | More ], Pnum ) :- !,
+cantPos( [ (y,_) | More ], Pnum ) :- !,
   cantPos( More, Pnum1 ), Pnum is Pnum1 + 1.
 cantPos( [ (n,_) | More ], Pnum ) :- cantPos( More, Pnum ).
 
@@ -156,16 +178,25 @@ select_minimal_entropy_aux(
 %Calculo de cual tiene mejor Ganancia, para elejir el mejor atributo.
 
 %Caso Base
-seleccionarMejorGanancia(_EntropiaGeneral, [], (AtributoAux, ParticionAux, _EntropiaAux), AtributoAux, ParticionAux).
+seleccionarMejorGanancia(EntropiaGeneral, [], (AtributoAux, ParticionAux, _EntropiaAux), AtributoAux, ParticionAux).
 
 %Caso Recursivo. Si la Ganancia1 es Mejor, entonces actualizamos nuestro auxiliar y seguimos buscando. Sino, buscamos con el mismo auxiliar.
 seleccionarMejorGanancia(EntropiaGeneral, [(Atributo, Particion, Entropia) | ParticionesRestantes],
 (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion):-
+
+
+    print("Atributo entrante "),print(Atributo),nl,
+    print("ENTROPIA GENERAL entrante "),print(EntropiaGeneral),nl,
+    %print("EntropiaAux "),print(EntropiaAux),nl,
     Ganancia1 is EntropiaGeneral - Entropia,
     Ganancia2 is EntropiaGeneral - EntropiaAux,
-    Ganancia1 > Ganancia2 ->
-    seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (Atributo, Particion, Entropia), SaleAtributo, SaleParticion )
-    ; seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion ).
+    print("LA Ganancia1 "),print(Ganancia1),nl,
+    print("LA Ganancia2 "),print(Ganancia2),nl,
+
+    (Ganancia1 > Ganancia2 -> (print("Ganancia1 "),print(Ganancia1), print(" Atributo "),print(Atributo),nl,
+    seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (Atributo, Particion, Entropia), SaleAtributo, SaleParticion ))
+    ; (print("Ganancia2 "),print(Ganancia2), print(" Atributo "),print(AtributoAux),nl,
+     seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion ))).
 
 
 
