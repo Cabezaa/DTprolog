@@ -1,11 +1,9 @@
-inicializar( [ 
+crearArbol([
 (gpa, [4.0,3.7,3.5] ),
 (univ, [top_10,top_20,top_30] ),
 (publ, [yes,no] ),
 (rec, [good,normal] )
-],
-
-[
+], [
 (p, [(gpa,4.0),(univ,top_10), (publ,yes),(rec,good)] ),
 (p, [(gpa,4.0),(univ,top_10), (publ,no),(rec,good)] ),
 (p, [(gpa,4.0),(univ,top_20), (publ,no),(rec,normal)] ),
@@ -18,23 +16,9 @@ inicializar( [
 (n, [(gpa,3.5),(univ,top_10), (publ,no),(rec,normal)] ),
 (n, [(gpa,3.5),(univ,top_30), (publ,yes),(rec,normal)] ),
 (n,[(gpa,3.5),(univ,top_30), (publ,no),(rec,good )] )
-],
-Z, [
+]).
+
+utilizarArbol([
     (p,[(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)] ),
     (n,[(gpa,4.0),(univ,top_10), (publ,no),(rec,good)]),
     (p,[(gpa,4.0),(univ,top_10), (publ,no),(rec,good)])]).
-
-tree(raiz(gpa),[4.0-tree(
-raiz(univ),
-	[top_10-tree(
-		raiz(publ),
-		[yes-tree(
-			raiz(rec),
-				[good-leaf(p)])
-		,no-tree(
-		raiz(rec),
-			[good-leaf(p)])
-			])
-	,top_20-tree(
-		raiz(publ),
-			[no-tree(raiz(rec),[normal-leaf(p)])])]),3.7-tree(raiz(publ),[yes-tree(raiz(univ),[top_10-tree(raiz(rec),[good-leaf(p)]),top_30-tree(raiz(rec),[good-leaf(p)])]),no-tree(raiz(univ),[top_10-tree(raiz(rec),[good-leaf(n)]),top_20-tree(raiz(rec),[good-leaf(n)]),top_30-tree(raiz(rec),[good-leaf(n)])])]),3.5-tree(raiz(univ),[top_10-tree(raiz(publ),[no-tree(raiz(rec),[normal-leaf(n)])]),top_20-tree(raiz(publ),[yes-tree(raiz(rec),[normal-leaf(n)])]),top_30-tree(raiz(publ),[yes-tree(raiz(rec),[normal-leaf(n)]),no-tree(raiz(rec),[good-leaf(n)])])])])

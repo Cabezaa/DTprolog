@@ -1,115 +1,53 @@
-%Probando el codigo de PL
-
-%Ejemplos Atributos
-% [(gpa, [4.0,3.7,3.5] ),(univ, [top_10,top_20,top_30] ),(publ, [yes,no] ),(rec, [good,normal] )]
-
-%Ejemplos Datos
-%[(p, [(gpa,4.0),(univ,top_10), (publ,yes),(rec,good)] ),(n, [(gpa,4.0),(univ,top_10), (publ,no),(rec,good)] )]
-
-
 %Sin Podar
-inicializar(Atributos, Datos, ArbolSalida, DatosTest1):-
-    id3( Atributos, Datos, ArbolSalida ),
-    print(ArbolSalida),
-    assert(ArbolSalida),!,
+crearArbol(Atributos, Datos):-
+    id3( Atributos, Datos, ArbolSalida ),!,
+    assert(ArbolSalida), print("Se ha creado el arbol correctamente"),nl.
+
+utilizarArbol(DatosTest1):-
     nb_setval(contador, 0),
     clasificar(DatosTest1),!,
-    print("AL FINAL "), % BORRAR
-    imprimirContador, %BORRAR
     length(DatosTest1, TamTest1),
     nb_getval(contador, CAux),
     Exactitud is CAux/TamTest1,
-    print("La exactitud es: "), print(Exactitud).
+    print("La exactitud es: "), print(Exactitud), nl.
 
-incrementar :- nb_getval(contador, C), CNew is C + 1, nb_setval(contador, CNew). 
+incrementar :- nb_getval(contador, C), CNew is C + 1, nb_setval(contador, CNew).
 imprimirContador:- print("Contador actual: "), nb_getval(contador, C), print(C),nl.
 
-id3( [], [ (Categ,_) | MoreData ] ):-Tree = leaf( Categ).
-
-
-clasificar([]).   
+clasificar([]).
 
 clasificar([ (ValorReal, AtributosValores) | Filas]) :-
     (member( (Atributo, Valor), AtributosValores ) %ForEach sobre la fila
     -> print("Entre con el Valor"),nl,print(Valor),nl,
         (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
-        -> 
+        ->
             %Atributo verdadro - Recorrer hermanos.
             (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
             -> print("V"),nl,print(Valor),nl,print("lo logre"),print(R),nl,
                 clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
                 %Aca sumar
             ;  print("la fila a clasificar tiene valores falsos")))),
-        
+
     clasificar(Filas). %Aca pasar la suma
-    
 
 
-clasificarAux(AtributoPadre, [_-leaf(ValorReal)], AtributosValores, ValorReal):-
+
+clasificarAux(_AtributoPadre, [_-leaf(ValorReal)], _AtributosValores, ValorReal):-
     incrementar, imprimirContador,
     print("El valor de la hoja es: "),print(ValorReal),nl.
-    
-clasificarAux(AtributoPadre, [_-leaf(C)], AtributosValores, ValorReal).
+
+clasificarAux(_AtributoPadre, [_-leaf(_C)], _AtributosValores, _ValorReal).
 
 
 % AtributosValores: [(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)]
 % (publ, listaSubArbol, )
-clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):- 
+clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
     member( (AtributoPadre, ValorPadre), AtributosValores ) %Encontamos el atributo de la fila a clasificar para conocer su valor.
     -> (member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
     -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl,print(RamasDeR),nl),
         clasificarAux(R,RamasDeR,AtributosValores,ValorReal).
 
-
-clasificar41([ (ValorReal, AtributosValores) | Filas]) :-
-    (member( (Atributo, Valor), AtributosValores ) %ForEach sobre la fila
-    -> print("Entre con el Valor"),nl,print(Valor),nl,
-        (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
-        -> 
-            %Atributo verdadro - Recorrer hermanos.
-            (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
-            -> print("V"),nl,print(Valor),nl,print("lo logre"),print(R),nl,
-                clasificarAux(R,RamasDeR, AtributosValores)
-                
-            ;  print("la fila a clasificar tiene valores falsos")))),
-        
-    clasificar(Filas).
-
-        
-clasificarAux23(AtributoPadre, [_-leaf(C)], AtributosValores):-print("El valor de la hoja es: "),print(C),nl.
-        
-% AtributosValores: [(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)]
-% (publ, listaSubArbol, )
-clasificarAux34(AtributoPadre, RamasDePadre, AtributosValores):-  
-    member( (AtributoPadre, ValorPadre), AtributosValores ) %Encontamos el atributo de la fila a clasificar para conocer su valor.
-    -> (member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
-    -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl,print(RamasDeR),nl),
-        clasificarAux(R,RamasDeR,AtributosValores).
-
-
-
-
-
-
-
-
-
-
-
-
-
-clasificar1([ (ValorReal, AtributosValores) | Filas]) :-
-    member( (Atributo, Valor), AtributosValores ) %ForEach sobre la fila
-    -> (tree(raiz(Atributo),[Valor-tree(raiz(A),B) | Algo]),print(Atributo),nl,print(A),nl,print(B),!
-    -> print("mache"),nl ;
-     print("no match"),nl).
-
-clasificar2([ (ValorReal, AtributosValores) | Filas]) :-
-    member( (Atributo, Valor), AtributosValores ) %ForEach sobre la fila
-    -> tree(raiz(Atributo),[Valor-tree(raiz(A),B) | Algo]),print(Atributo),nl,print(A),nl,print(B),!.
-   
-   
-id3( [], [ (Categ,_) | MoreData ], Tree ):-Tree = leaf( Categ).
+id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = leaf( Categ).
 
 
 id3( Atributos, Datos, ArbolSalida ) :-
@@ -121,7 +59,7 @@ id3( Atributos, Datos, ArbolSalida ) :-
   ArbolSalida = tree( raiz( BestAttr ), ChildrenTrees ).
 
 
-           
+
 % Devuelve el mejor atributo y la mejor particion de datos
 buscarRaiz( ListaAtributos, Datos, MejorAtributo, MejorParticion ) :-
   findall( (Atributo, Particion, Entropia),                                                     % Template utilizado
@@ -158,11 +96,11 @@ partition( Data, Attr,
 filasValorAtributo( [ ], _, _, [ ] ).
 
 % caso recursivo. V es el valor de la califaicion (positivo o negativo) y datum es la fila (con todos los valores de los atributos digamo)
-filasValorAtributo( [ (V,Datum) | MoreData ], Attr, AttrValue, SubData ) :-
+filasValorAtributo( [ (V,Datum) | OtrosDatos ], Attr, AttrValue, SubData ) :-
   member( (Attr,AttrValue), Datum ) %ForEach sobre la fila
-  -> filasValorAtributo( MoreData, Attr, AttrValue, MoreSubData ),
+  -> filasValorAtributo( OtrosDatos, Attr, AttrValue, MoreSubData ),
      SubData = [ (V,Datum) | MoreSubData ]
-  ;  filasValorAtributo( MoreData, Attr, AttrValue, SubData ).
+  ;  filasValorAtributo( OtrosDatos, Attr, AttrValue, SubData ).
 
 % Ej: 20 filas de sexo masculino.
 % Pnum = 14. Pp = 14/20. Pn = 6/20.
@@ -216,25 +154,25 @@ select_minimal_entropy_aux(
 
 
 %Calculo de cual tiene mejor Ganancia, para elejir el mejor atributo.
-       
+
 %Caso Base
-seleccionarMejorGanancia(EntropiaGeneral, [], (AtributoAux, ParticionAux, EntropiaAux), AtributoAux, ParticionAux).
-       
+seleccionarMejorGanancia(_EntropiaGeneral, [], (AtributoAux, ParticionAux, _EntropiaAux), AtributoAux, ParticionAux).
+
 %Caso Recursivo. Si la Ganancia1 es Mejor, entonces actualizamos nuestro auxiliar y seguimos buscando. Sino, buscamos con el mismo auxiliar.
 seleccionarMejorGanancia(EntropiaGeneral, [(Atributo, Particion, Entropia) | ParticionesRestantes],
 (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion):-
     Ganancia1 is EntropiaGeneral - Entropia,
     Ganancia2 is EntropiaGeneral - EntropiaAux,
-    Ganancia1 > Ganancia2 -> 
+    Ganancia1 > Ganancia2 ->
     seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (Atributo, Particion, Entropia), SaleAtributo, SaleParticion )
     ; seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion ).
-    
+
 
 
 generarSubArboles( _, [ ], [ ] ).
 
 generarSubArboles(
-         AttrList, [ Value-SubData | MoreData ], ChildrenTrees ) :-
+         AttrList, [ Value-SubData | OtrosDatos ], ChildrenTrees ) :-
   id3( AttrList, SubData, ChildTree ),
-  generarSubArboles( AttrList, MoreData, MoreTrees ),
+  generarSubArboles( AttrList, OtrosDatos, MoreTrees ),
   ChildrenTrees = [ Value-ChildTree | MoreTrees ].
