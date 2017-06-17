@@ -78,111 +78,71 @@ buscarRaiz( ListaAtributos, Datos, MejorAtributo, MejorParticion ) :-
            ( member( ( Atributo, Valores ), ListaAtributos ),
            %print("Atributo :"),print(Atributo),nl,                                 % For Eeach sobre la lista, creando particiones
            %print("Valores :"),print(Valores),nl,                                 % For Eeach sobre la lista, creando particiones
-           partition( Datos, Atributo, Valores, Particion, Entropia ),
+           particionamiento( Datos, Atributo, Valores, Particion, Entropia ),
            print("############################################"),nl,
            print("Atributo "), print(Atributo),print(" Entr: "),print(Entropia),nl ), ParticionesTemplate),  % Asignamos segun el template
-
-           %print("Sali EXITOSO del find all"),nl,
-           %print("Datos: "),print(Datos),nl,
-           cantPos(Datos, CantPositivos),
+           cantYes(Datos, CantidadYes),
            length(Datos,CantDatos),
-          % print("CantPositivos: "),print(CantPositivos),nl,
-          % print("CantDatos :"),print(CantDatos),nl,
-           EntropiaGeneral is CantPositivos/CantDatos,                                          % Calculamos la Entropia General para calcular la ganancia
+           EntropiaGeneral is CantidadYes/CantDatos,                                          % Calculamos la Entropia General para calcular la ganancia
            nth0(0, ParticionesTemplate, PrimerParticion),                                       % Asignamos a la primera particion como una auxiliar para el calc
            seleccionarMejorGanancia(EntropiaGeneral, ParticionesTemplate, PrimerParticion, MejorAtributo, MejorParticion).
 
 %Caso base: La entropia de una lista vacia es igual a 0.
-partition( _, _, [ ] , [ ], 0 ).
+particionamiento( _, _, [ ] , [ ], 0 ).
 % Devuelve una Particion y su entropia
-partition( Data, Attr,
-           [ OnePosAttrValue | RestValues ] , Partition, Entropy ) :-
-  filasValorAtributo( Data, Attr, OnePosAttrValue, SubData ),
-  ( SubData = [ ]
-    -> partition( Data, Attr, RestValues , Partition, Entropy )
+particionamiento( Datos, Atributo, [ OnePosAttrValue | OtrosValores ], Particion, Entropia ) :-
+  filasValorAtributo( Datos, Atributo, OnePosAttrValue, DatosAtributoValor ),
+  ( DatosAtributoValor = [ ] -> particionamiento( Datos, Atributo, OtrosValores , Particion, Entropia )
     ;
-    entropia( SubData, SubEntropy ), % Sexo masculino
-    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"),print("SubEntropy de "),print(Attr),print(" ES "),print(SubEntropy),nl,
-    length(Data,FilasTotales),
-    partition( Data, Attr, RestValues , RestPartition, RestEntropy ),
-    Partition = [ OnePosAttrValue-SubData | RestPartition ],
-    length(SubData,FilasCalculadas),
+    entropia( DatosAtributoValor, SubEntropy ), % Sexo masculino
+    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"),print("SubEntropy de "),print(Atributo),print(" ES "),print(SubEntropy),nl,
+    length(Datos,FilasTotales),
+    particionamiento( Datos, Atributo, OtrosValores , RestPartition, AcumuladorEntropia ),
+    Particion = [ OnePosAttrValue-DatosAtributoValor | RestPartition ],
+
+    %Calculamos la Entropia
+    length(DatosAtributoValor,FilasCalculadas),
     NuevaEntropia is -(FilasCalculadas/FilasTotales) * SubEntropy,
-    Entropy is NuevaEntropia + RestEntropy ).
+    Entropia is NuevaEntropia + AcumuladorEntropia ).
 
 
-%Select devuelve todas las FILAS que contienen el par (atributo,valor). Ej: (sexo,masculino)
+%devuelve todas las FILAS que contienen el par (atributo,valor). Ej: (sexo,masculino)
 
 
 %Caso base: La particion de una lista vacia y de cualquier atributo, es una particion vacia.
 filasValorAtributo( [ ], _, _, [ ] ).
 
 % caso recursivo. V es el valor de la califaicion (positivo o negativo) y datum es la fila (con todos los valores de los atributos digamo)
-filasValorAtributo( [ (V,Datum) | OtrosDatos ], Attr, AttrValue, SubData ) :-
-  member( (Attr,AttrValue), Datum ) %ForEach sobre la fila
-  -> filasValorAtributo( OtrosDatos, Attr, AttrValue, MoreSubData ),
-     SubData = [ (V,Datum) | MoreSubData ]
-  ;  filasValorAtributo( OtrosDatos, Attr, AttrValue, SubData ).
+filasValorAtributo( [ (V,Dat) | OtrosDatos ], Atributo, Valor, SubData ) :-
+  member( (Atributo,Valor), Dat ) %ForEach sobre la fila
+  -> filasValorAtributo( OtrosDatos, Atributo, Valor, MoreSubData ),
+     SubData = [ (V,Dat) | MoreSubData ]
+  ;  filasValorAtributo( OtrosDatos, Atributo, Valor, SubData ).
 
 % Ej: 20 filas de sexo masculino.
 % Pnum = 14. Pp = 14/20. Pn = 6/20.
 % PpLogPn =
 
 
-entropia( Data, Entropy ) :-
-  cantPos( Data, Pnum ),
-  length( Data, Dnum ),
-  %print("Longitud "), print(Dnum),nl,
-  Pp is Pnum / Dnum,
-  Pn is 1 - Pp,
-  %print("PP "), print(Pp),nl,
-  %print("Pn "), print(Pn),nl,
-  (Pp > 0 ->
-  PpLogPp is Pp*(log10(Pp)/log10(2)) ;
-  PpLogPp = 0 ),
-  (Pn > 0 ->
-      PnLogPn is Pn*(log10(Pn)/log10(2)),
-      %print("#### PnLogPn es "),print(PnLogPn),nl,
-      %print("#### PpLogPp es "),print(PpLogPp),nl,
-      Entropy is - ( PpLogPp + PnLogPn )
+entropia( Datos, SubEntropia ) :-
+  cantYes( Datos, CantYes ),
+  length( Datos, Longitud ),
+  Yes is CantYes / Longitud,
+  No is 1 - Yes,
+  (Yes > 0 ->
+  LogYes is Yes*(log10(Yes)/log10(2)) ;
+  LogYes = 0 ),
+  (No > 0 ->
+      LogNo is No*(log10(No)/log10(2)),
+      SubEntropia is - ( LogYes + LogNo )
       ;
-      PnLogPn = 0,
-      %print("#### PnLogPn es "),print(PnLogPn),nl,
-      %print("#### PpLogPp es "),print(PpLogPp),nl,
-      Entropy is - ( PpLogPp + PnLogPn )).
+      LogNo = 0,
+      SubEntropia is - ( LogYes + LogNo )).
 
-
-
-cantPos( [ ], 0 ).
-cantPos( [ (y,_) | More ], Pnum ) :- !,
-  cantPos( More, Pnum1 ), Pnum is Pnum1 + 1.
-cantPos( [ (n,_) | More ], Pnum ) :- cantPos( More, Pnum ).
-
-
-
-select_minimal_entropy(
-    [ (Attr, Partition, Entropy ) | MorePartitions ],
-    BestAttr, BestPartition ):-
-  select_minimal_entropy_aux( MorePartitions, (Attr, Partition, Entropy),
-                              BestAttr, BestPartition ).
-
-%Caso base
-select_minimal_entropy_aux( [ ], (Attr, Partition, _), Attr, Partition ).
-
-%Caso si el nuevo es mejor que el anterior: reemplazamos el anterior por el nuevo
-select_minimal_entropy_aux(
-       [ (Attr1, Partition1, Entropy1) | MorePartitions ],
-       ( _, _, Entropy), BestAttr, BestPartition ) :-
-  Entropy1 < Entropy , !,
-  select_minimal_entropy_aux(
-      MorePartitions, (Attr1, Partition1, Entropy1), BestAttr, BestPartition ).
-
-%Caso si el nuevo es peor que el anterior: quitamos el nuevo
-select_minimal_entropy_aux(
-       [ _ | MorePartitions ],
-       (Attr, Partition, Entropy), BestAttr, BestPartition ) :-
-  select_minimal_entropy_aux(
-       MorePartitions, (Attr, Partition, Entropy), BestAttr, BestPartition ).
+cantYes( [ ], 0 ).
+cantYes( [ (y,_) | More ], Pnum ) :- !,
+  cantYes( More, Pnum1 ), Pnum is Pnum1 + 1.
+cantYes( [ (n,_) | More ], Pnum ) :- cantYes( More, Pnum ).
 
 
 %Calculo de cual tiene mejor Ganancia, para elejir el mejor atributo.
@@ -213,7 +173,7 @@ seleccionarMejorGanancia(EntropiaGeneral, [(Atributo, Particion, Entropia) | Par
 generarSubArboles( _, [ ], [ ] ).
 
 generarSubArboles(
-         AttrList, [ Value-SubData | OtrosDatos ], ChildrenTrees ) :-
-  id3( AttrList, SubData, ChildTree ),
-  generarSubArboles( AttrList, OtrosDatos, MoreTrees ),
-  ChildrenTrees = [ Value-ChildTree | MoreTrees ].
+         ListaAtributos, [ Valor-SubData | OtrosDatos ], Hijos ) :-
+  id3( ListaAtributos, SubData, ArbolHijo ),
+  generarSubArboles( ListaAtributos, OtrosDatos, OtrosArboles ),
+  Hijos = [ Valor-ArbolHijo | OtrosArboles ].
