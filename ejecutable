@@ -150,7 +150,7 @@ crearArbol([
 (y,[(edad,edad-media),(workclass, Federal-gov),(educacion, Masters),(marital-status, Never-married),(ocupacion, Exec-managerial),(relacion, Not-in-family),(raza, White),(sexo, Female),(capital-gain,no),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)]),
 (y,[(edad,edad-media),(workclass, Private),(educacion, Masters),(marital-status, Married-civ-spouse),(ocupacion, Prof-specialty),(relacion, Other-relative),(raza, White),(sexo, Male),(capital-gain,no),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)]),
 (n,[(edad,joven),(workclass, Self-emp-not-inc),(educacion, HS-grad),(marital-status, Never-married),(ocupacion, Sales),(relacion, Not-in-family),(raza, White),(sexo, Male),(capital-gain,si),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)])
-])
+]).
 
 utilizarArbol([
     (p,[(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)] ),

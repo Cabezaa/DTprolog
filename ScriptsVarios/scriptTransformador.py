@@ -3,63 +3,40 @@
 def main():
     nuevaLinea = ""
     i = 0
-    archivoEntrada = open("entrada6000lineas.txt", "r")
-    archivoSalida = open("salida600Age.txt","r+")
+    archivoEntrada = open("test3Salida.txt", "r")
+    archivoSalida = open("test3PROLOG.txt","r+")
     for linea in archivoEntrada.readlines():
         arreglo = linea.split(',')
         nuevaLinea = nuevaLinea + '('
-        if arreglo[14] == " <=50K\n":
+        if arreglo[12] == " n\n":
             nuevaLinea = nuevaLinea + 'n,['
-        if arreglo[14] == " >50K\n":
+        if arreglo[12] == " y\n":
             nuevaLinea = nuevaLinea + 'y,['
 
 
 
-        for i in range(0, 14):
-            if i==13:
-                x = arreglo[i]
-                #print(arreglo[i])
-                if x == " United-States":
-                    nacional = "nacional"
-                else:
-                    nacional = "extranjero"
-                nuevaLinea = nuevaLinea + '(pais,'+nacional+')]'
-            elif i==12:
-                x = int(arreglo[i])
-                if x < 25:
-                    horas = "medio-tiempo"
-                elif  x < 40 and x >= 25:
-                    horas = "tiempo-completo"
-                elif x >= 40:
-                    horas = "excesivo"
-                nuevaLinea = nuevaLinea + '(horas-por-semana,'+horas+'),'
-            elif i==11:
-                x = int(arreglo[i])
-                if x == 0:
-                    tieneInversiones = "si"
-                else:
-                    tieneInversiones = "no"
-                nuevaLinea = nuevaLinea + '(capital-loss,'+tieneInversiones+'),'
+        for i in range(0, 12):
+            if i==11:
+                nuevaLinea = nuevaLinea + '(pais,'+arreglo[i]+')]'
             elif i==10:
-                x = int(arreglo[i])
-                if x == 0:
-                    tieneInversiones = "si"
-                else:
-                    tieneInversiones = "no"
-                nuevaLinea = nuevaLinea + '(capital-gain,'+tieneInversiones+'),'
+                nuevaLinea = nuevaLinea + '(horas-por-semana,'+arreglo[i]+'),'
             elif i==9:
-                nuevaLinea = nuevaLinea + '(sexo,'+arreglo[i]+'),'
+                nuevaLinea = nuevaLinea + '(capital-loss,'+arreglo[i]+'),'
             elif i==8:
-                nuevaLinea = nuevaLinea + '(raza,'+arreglo[i]+'),'
+                nuevaLinea = nuevaLinea + '(capital-gain,'+arreglo[i]+'),'
             elif i==7:
-                nuevaLinea = nuevaLinea + '(relacion,'+arreglo[i]+'),'
+                nuevaLinea = nuevaLinea + '(sexo,'+arreglo[i]+'),'
             elif i==6:
-                nuevaLinea = nuevaLinea + '(ocupacion,'+arreglo[i]+'),'
+                nuevaLinea = nuevaLinea + '(raza,'+arreglo[i]+'),'
             elif i==5:
+                nuevaLinea = nuevaLinea + '(relacion,'+arreglo[i]+'),'
+            elif i==4:
+                nuevaLinea = nuevaLinea + '(ocupacion,'+arreglo[i]+'),'
+            elif i==3:
                 nuevaLinea = nuevaLinea + '(marital-status,'+arreglo[i]+'),'
             #elif i==4:
                 #nuevaLinea = nuevaLinea + '(education-num,'+arreglo[i]+'),'
-            elif i==3:
+            elif i==2:
                 nuevaLinea = nuevaLinea + '(educacion,'+arreglo[i]+'),'
             #elif i==2:
                 # x = int(arreglo[i])
@@ -90,17 +67,7 @@ def main():
             elif i==1:
                 nuevaLinea = nuevaLinea + '(workclass,'+arreglo[i]+'),'
             elif i == 0:
-                x = int(arreglo[i])
-                if x < 25:
-                    age = "joven"
-                else:
-                    if x < 50 and x >= 25:
-                        age = "edad-media"
-                    elif x >= 50 and x < 65:
-                        age = "adulto"
-                    else:
-                        age = "anciano"
-                nuevaLinea = nuevaLinea + '(edad,'+age+'),'
+                nuevaLinea = nuevaLinea + '(edad,'+arreglo[i]+'),'
         nuevaLinea = nuevaLinea + '),' + '\n'
 
     archivoSalida.write(nuevaLinea)
