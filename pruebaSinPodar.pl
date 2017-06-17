@@ -9,25 +9,32 @@ utilizarArbol(DatosTest1):-
     length(DatosTest1, TamTest1),
     nb_getval(contador, CAux),
     Exactitud is CAux/TamTest1,
-    print("La exactitud es: "), print(Exactitud), nl.
+    nl,
+    print('###################'),nl,
+    print('la exactitud es: '), print(Exactitud), nl,
+    print('###################'),nl.
 
 incrementar :- nb_getval(contador, C), CNew is C + 1, nb_setval(contador, CNew).
 imprimirContador:- print("Contador actual: "), nb_getval(contador, C), print(C),nl.
 
+recorrer(Algo):-
+    foreach(member((A,B), Algo), (algo)).
+
 clasificar([]).
-
 clasificar([ (ValorReal, AtributosValores) | Filas]) :-
-    (member( (Atributo, Valor), AtributosValores ) %ForEach sobre la fila
-    -> print("Entre con el Valor"),nl,print(Valor),nl,
-        (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
-        ->
-            %Atributo verdadro - Recorrer hermanos.
-            (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
-            -> print("V"),nl,print(Valor),nl,print("lo logre"),print(R),nl,
-                clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
-                %Aca sumar
-            ;  print("la fila a clasificar tiene valores falsos")))),
-
+    foreach(member((Atributo, Valor), AtributosValores ), (
+        print("Entre con el Valor"),nl,print(Valor),nl,
+           (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
+           ->
+               %Atributo verdadro - Recorrer hermanos.
+               (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
+               -> print("V"),nl,print(Valor),nl,print("lo logre"),nl,
+                   clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
+                   %Aca sumar
+               ;  print("la fila a clasificar tiene valores falsos"))
+           ;
+           print("LLEGUE ACA"))
+    )),
     clasificar(Filas). %Aca pasar la suma
 
 
@@ -42,10 +49,13 @@ clasificarAux(_AtributoPadre, [_-leaf(_C)], _AtributosValores, _ValorReal).
 % AtributosValores: [(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)]
 % (publ, listaSubArbol, )
 clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
+    print("Entre de vuelta"),nl,
     member( (AtributoPadre, ValorPadre), AtributosValores ) %Encontamos el atributo de la fila a clasificar para conocer su valor.
-    -> (member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
-    -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl,print(RamasDeR),nl),
-        clasificarAux(R,RamasDeR,AtributosValores,ValorReal).
+    -> (
+        print("Entre con el atributo: "), print(AtributoPadre),nl,
+        member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
+        -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl),
+            clasificarAux(R,RamasDeR,AtributosValores,ValorReal).
 
 id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = leaf( Categ).
 

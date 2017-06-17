@@ -1,0 +1,6 @@
+utilizarArbol([
+(n,[(edad,adulto),(workclass, self-emp-not-inc),(educacion, hs-grad),(marital-status, married-civ-spouse),(ocupacion, exec-managerial),(relacion, husband),(raza, white),(sexo, male),(capital-gain,si),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)]),
+(y,[(edad,adulto),(workclass, self-emp-not-inc),(educacion, hs-grad),(marital-status, married-civ-spouse),(ocupacion, exec-managerial),(relacion, husband),(raza, white),(sexo, male),(capital-gain,si),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)]),
+(n,[(edad,edad-media),(workclass, private),(educacion, masters),(marital-status, never-married),(ocupacion, prof-specialty),(relacion, not-in-family),(raza, white),(sexo, female),(capital-gain,no),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)]),
+(n,[(edad,edad-media),(workclass, private),(educacion, some-college),(marital-status, married-civ-spouse),(ocupacion, exec-managerial),(relacion, husband),(raza, black),(sexo, male),(capital-gain,si),(capital-loss,si),(horas-por-semana,excesivo),(pais,nacional)])
+]).
