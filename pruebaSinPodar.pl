@@ -5,6 +5,7 @@ crearArbol(Atributos,Datos):-
 
 utilizarArbol(DatosTest1):-
     nb_setval(contador, 0),
+    nb_setval(acumFilas, 0),
     clasificar(DatosTest1),!,
     length(DatosTest1, TamTest1),
     nb_getval(contador, CAux),
@@ -15,29 +16,44 @@ utilizarArbol(DatosTest1):-
     print('###################'),nl.
 
 incrementar :- nb_getval(contador, C), CNew is C + 1, nb_setval(contador, CNew).
+incrementarFilas :- nb_getval(acumFilas, C), CNew is C + 1, nb_setval(acumFilas, CNew).
 imprimirContador:- print("Contador actual: "), nb_getval(contador, C), print(C),nl.
+imprimirFilas:- print("##############################################################FILAS!!!: "), nb_getval(acumFilas, C), print(C),nl.
 
 recorrer(Algo):-
-    foreach(member((A,B), Algo), (algo)).
+    foreach(member(A, Algo), (algo)).
+
+algo:-
+    print(2),
+    print(3),nl.
+
+printArbol():-
+    tree(X,Z),
+    print(X),nl,
+    nl,nl,nl,nl,nl,nl,
+    print(Z).
 
 clasificar([]).
 clasificar([ (ValorReal, AtributosValores) | Filas]) :-
+    incrementarFilas,
+    imprimirFilas,
     foreach(member((Atributo, Valor), AtributosValores ), (
-        print("Entre con el Valor"),nl,print(Valor),nl,
-           (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
-           ->
-               %Atributo verdadro - Recorrer hermanos.
-               (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
-               -> print("V"),nl,print(Valor),nl,print("lo logre"),nl,
-                   clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
-                   %Aca sumar
-               ;  print("la fila a clasificar tiene valores falsos"))
-           ;
-           print("LLEGUE ACA"))
+        auxiliar(Atributo,Valor,AtributosValores,ValorReal)
     )),
     clasificar(Filas). %Aca pasar la suma
 
-
+auxiliar(Atributo,Valor,AtributosValores,ValorReal):-
+    print("Entre con el Valor"),nl,print(Valor),nl,
+       (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
+       ->
+           %Atributo verdadro - Recorrer hermanos.
+           (member( (Valor-tree(raiz(R),RamasDeR)), RamasDeAtributo ) % Por cada Rama
+           -> print("V"),nl,print(Valor),nl,print("lo logre"),nl,
+               clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
+               %Aca sumar
+           ;  print("la fila a clasificar tiene valores falsos"))
+       ;
+       print("LLEGUE ACA")).
 
 clasificarAux(_AtributoPadre, [_-leaf(ValorReal)], _AtributosValores, ValorReal):-
     incrementar, imprimirContador,
@@ -52,12 +68,29 @@ clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
     print("Entre de vuelta"),nl,
     member( (AtributoPadre, ValorPadre), AtributosValores ) %Encontamos el atributo de la fila a clasificar para conocer su valor.
     -> (
-        print("Entre con el atributo: "), print(AtributoPadre),nl,
-        member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
-        -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl),
-            clasificarAux(R,RamasDeR,AtributosValores,ValorReal).
+        print("Entre con el atributo: "), print(AtributoPadre),print(-),print(ValorPadre),nl,
+        (member( (ValorPadre-tree(raiz(R),RamasDeR)), RamasDePadre )
+        -> print("encontre la sub rama que buscaba"),nl,print(ValorPadre),nl,print("Raiz "),print(R),nl,
+            clasificarAux(R,RamasDeR,AtributosValores,ValorReal)
+        ;print("ENTRE AL CASO QUE TENGO DOS HIJOS O MAS"),nl,
+        print("AtributoPadre"),print(AtributoPadre),nl,
+        print("ValorPadre"),print(ValorPadre),nl,
+        print("RamasDePadre"),print(RamasDePadre),nl,
+        print("AtributosValores"),print(AtributosValores),nl,
+        (member( ValorPadre-leaf(Hoja), RamasDePadre )
+        ->
+            print("ENTRE AL MEMBER ESPECIAL"),nl,
+            clasificarAux(AtributoPadre,[ValorPadre-leaf(Hoja)],AtributosValores,ValorReal),
+            print("Volvi del caso especial de varias hojas"),nl,imprimirContador
+
+            ;
+                print("#####################################No se puede clasificar esa fila!"),nl
+            )
+        )
+    ).
 
 id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = leaf( Categ).
+%id3( [], _X, _Tree ):-print("LLEGUE ACA, y es heavy"),nl,!,false.
 
 
 id3( Atributos, Datos, ArbolSalida ) :-
