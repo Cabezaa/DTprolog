@@ -16,32 +16,28 @@ utilizarArbol(DatosTest1):-
     print('###################'),nl.
 
 incrementar :- nb_getval(contador, C), CNew is C + 1, nb_setval(contador, CNew).
-incrementarFilas :- nb_getval(acumFilas, C), CNew is C + 1, nb_setval(acumFilas, CNew).
+%incrementarFilas :- nb_getval(acumFilas, C), CNew is C + 1, nb_setval(acumFilas, CNew).
 imprimirContador:- print("Contador actual: "), nb_getval(contador, C), print(C),nl.
-imprimirFilas:- print("##############################################################FILAS!!!: "), nb_getval(acumFilas, C), print(C),nl.
+%imprimirFilas:- print("##############################################################FILAS!!!: "), nb_getval(acumFilas, C), print(C),nl.
 
-recorrer(Algo):-
-    foreach(member(A, Algo), (algo)).
-
-algo:-
-    print(2),
-    print(3),nl.
-
-printArbol():-
+mostrarArbol():-
     tree(X,Z),
     print(X),nl,
     nl,nl,nl,nl,nl,nl,
     print(Z).
 
+% Metodo para clasificar un conjunto de datos de Test
 clasificar([]).
 clasificar([ (ValorReal, AtributosValores) | Filas]) :-
-    incrementarFilas,
-    imprimirFilas,
+    %incrementarFilas,
+    %imprimirFilas,
     foreach(member((Atributo, Valor), AtributosValores ), (
         auxiliar(Atributo,Valor,AtributosValores,ValorReal)
     )),
     clasificar(Filas). %Aca pasar la suma
 
+% Metodo que sera llamado por cada miembro de la lista AtributoValores
+% Busca las ramas que salgan del arbol raiz.
 auxiliar(Atributo,Valor,AtributosValores,ValorReal):-
     print("Entre con el Valor"),nl,print(Valor),nl,
        (tree(raiz(Atributo), RamasDeAtributo) % Ramas del Atributo que estamos recorriendo
@@ -55,6 +51,7 @@ auxiliar(Atributo,Valor,AtributosValores,ValorReal):-
        ;
        print("LLEGUE ACA")).
 
+%Casos bases. En caso de acertar en la clasificacion, aumentamos la variable global.
 clasificarAux(_AtributoPadre, [_-hoja(ValorReal)], _AtributosValores, ValorReal):-
     incrementar, imprimirContador,
     print("El valor de la hoja es: "),print(ValorReal),nl.
@@ -62,8 +59,9 @@ clasificarAux(_AtributoPadre, [_-hoja(ValorReal)], _AtributosValores, ValorReal)
 clasificarAux(_AtributoPadre, [_-hoja(_C)], _AtributosValores, _ValorReal).
 
 
-% AtributosValores: [(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)]
-% (publ, listaSubArbol, )
+% Metodo que recorre los sub-arboles internos de la estructura tree en busqueda de poder clasificar una fila dependiendo de la estructura propia del arbol.
+% La logica de este metodo, es fijarse si existe una raiz o una hoja para el atributo y luego iterar por la estructura hacia el proximo atributo.
+% Repite esta logica hasta encontrar una hoja en los casos base.
 clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
     print("Entre de vuelta"),nl,
     member( (AtributoPadre, ValorPadre), AtributosValores ) %Encontamos el atributo de la fila a clasificar para conocer su valor.
@@ -89,7 +87,7 @@ clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
         )
     ).
 
-%Caso todos los datos del SubDatos es tienen la misma clasificacion
+% Caso todos los datos del SubDatos es tienen la misma clasificacion
 id3( _, Data, Tree ) :-
   mismaCategoria( Data, Categ ),!,
   Tree = hoja( Categ).
@@ -97,6 +95,7 @@ id3( _, Data, Tree ) :-
 %Caso sin variables
 id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = hoja( Categ).
 
+% Implementacion del algoritmo ID3
 id3( Atributos, Datos, ArbolSalida ) :-
 print("Entre en ID3"),nl,
   buscarRaiz( Atributos, Datos, BestAttr, BestDataPartition ), print("Busque la raiz"),nl,
@@ -160,11 +159,7 @@ filasValorAtributo( [ (V,Dat) | OtrosDatos ], Atributo, Valor, SubData ) :-
      SubData = [ (V,Dat) | MoreSubData ]
   ;  filasValorAtributo( OtrosDatos, Atributo, Valor, SubData ).
 
-% Ej: 20 filas de sexo masculino.
-% Pnum = 14. Pp = 14/20. Pn = 6/20.
-% PpLogPn =
-
-
+% Calculamos la entropia de un conjunto de datos basados en un valor particular de un atributo
 entropia( Datos, SubEntropia ) :-
   cantYes( Datos, CantYes ),
   length( Datos, Longitud ),
@@ -210,7 +205,7 @@ seleccionarMejorGanancia(EntropiaGeneral, [(Atributo, Particion, Entropia) | Par
      seleccionarMejorGanancia(EntropiaGeneral, ParticionesRestantes, (AtributoAux, ParticionAux, EntropiaAux), SaleAtributo, SaleParticion ))).
 
 
-
+% Generar los SubArboles que se insertaran recursivamente en el arbol.
 generarSubArboles( _, [ ], [ ] ).
 
 generarSubArboles(
