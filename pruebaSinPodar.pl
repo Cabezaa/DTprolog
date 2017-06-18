@@ -55,11 +55,11 @@ auxiliar(Atributo,Valor,AtributosValores,ValorReal):-
        ;
        print("LLEGUE ACA")).
 
-clasificarAux(_AtributoPadre, [_-leaf(ValorReal)], _AtributosValores, ValorReal):-
+clasificarAux(_AtributoPadre, [_-hoja(ValorReal)], _AtributosValores, ValorReal):-
     incrementar, imprimirContador,
     print("El valor de la hoja es: "),print(ValorReal),nl.
 
-clasificarAux(_AtributoPadre, [_-leaf(_C)], _AtributosValores, _ValorReal).
+clasificarAux(_AtributoPadre, [_-hoja(_C)], _AtributosValores, _ValorReal).
 
 
 % AtributosValores: [(gpa,3.7),(univ,top_10), (publ,yes),(rec,good)]
@@ -77,10 +77,10 @@ clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
         print("ValorPadre"),print(ValorPadre),nl,
         print("RamasDePadre"),print(RamasDePadre),nl,
         print("AtributosValores"),print(AtributosValores),nl,
-        (member( ValorPadre-leaf(Hoja), RamasDePadre )
+        (member( ValorPadre-hoja(Hoja), RamasDePadre )
         ->
             print("ENTRE AL MEMBER ESPECIAL"),nl,
-            clasificarAux(AtributoPadre,[ValorPadre-leaf(Hoja)],AtributosValores,ValorReal),
+            clasificarAux(AtributoPadre,[ValorPadre-hoja(Hoja)],AtributosValores,ValorReal),
             print("Volvi del caso especial de varias hojas"),nl,imprimirContador
 
             ;
@@ -89,9 +89,13 @@ clasificarAux(AtributoPadre, RamasDePadre, AtributosValores, ValorReal):-
         )
     ).
 
-id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = leaf( Categ).
-%id3( [], _X, _Tree ):-print("LLEGUE ACA, y es heavy"),nl,!,false.
+%Caso todos los datos del SubDatos es tienen la misma clasificacion
+id3( _, Data, Tree ) :-
+  mismaCategoria( Data, Categ ),!,
+  Tree = hoja( Categ).
 
+%Caso sin variables
+id3( [], [ (Categ,_) | _Datos ], Tree ):-Tree = hoja( Categ).
 
 id3( Atributos, Datos, ArbolSalida ) :-
 print("Entre en ID3"),nl,
@@ -102,15 +106,19 @@ print("Entre en ID3"),nl,
   generarSubArboles( NuevaLista, BestDataPartition, ChildrenTrees ),
   ArbolSalida = tree( raiz( BestAttr ), ChildrenTrees ).
 
-
+%Metodo auxiliar para calcular si todas las tuplas tienen la misma clasificacion
+  mismaCategoria( [ ], _ ).
+  mismaCategoria( [ (Categ,_) | MoreData ], Categ ) :-
+    mismaCategoria( MoreData, Categ ).
 
 % Devuelve el mejor atributo y la mejor particion de datos
 buscarRaiz( ListaAtributos, Datos, MejorAtributo, MejorParticion ) :-
-  %print("ENTRE A BUSCAR RAIZ"),nl,
+  print("ENTRE A BUSCAR RAIZ"),nl,
+  print("Mi lista de atributos es "),print(ListaAtributos),nl,
   findall( (Atributo, Particion, Entropia),                                                     % Template utilizado
-           ( member( ( Atributo, Valores ), ListaAtributos ),
-           %print("Atributo :"),print(Atributo),nl,                                 % For Eeach sobre la lista, creando particiones
-           %print("Valores :"),print(Valores),nl,                                 % For Eeach sobre la lista, creando particiones
+           (print("Encontre el Atributo :"),print(Atributo),nl, member( ( Atributo, Valores ), ListaAtributos ),
+           print("Encontre el Atributo :"),print(Atributo),nl,                                 % For Eeach sobre la lista, creando particiones
+           print("Valores :"),print(Valores),nl,                                 % For Eeach sobre la lista, creando particiones
            particionamiento( Datos, Atributo, Valores, Particion, Entropia ),
            print("############################################"),nl,
            print("Atributo "), print(Atributo),print(" Entr: "),print(Entropia),nl ), ParticionesTemplate),  % Asignamos segun el template
