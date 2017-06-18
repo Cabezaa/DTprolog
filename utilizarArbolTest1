@@ -1,3 +1,4 @@
+utilizarArbol([
 (n,[(edad,edad-media),(workclass,  private),(educacion,  masters),(marital-status,  never-married),(ocupacion,  prof-specialty),(relacion,  not-in-family),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, si),(horas-por-semana, excesivo),(pais, nacional)]),
 (y,[(edad,adulto),(workclass,  private),(educacion,  bachelors),(marital-status,  married-civ-spouse),(ocupacion,  exec-managerial),(relacion,  husband),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  state-gov),(educacion,  hs-grad),(marital-status,  divorced),(ocupacion,  adm-clerical),(relacion,  unmarried),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, no),(horas-por-semana, tiempo-completo),(pais, nacional)]),
@@ -110,8 +111,5 @@
 (n,[(edad,edad-media),(workclass,  private),(educacion,  hs-grad),(marital-status,  never-married),(ocupacion,  other-service),(relacion,  not-in-family),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, no),(horas-por-semana, tiempo-completo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  private),(educacion,  some-college),(marital-status,  married-civ-spouse),(ocupacion,  tech-support),(relacion,  husband),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  private),(educacion,  some-college),(marital-status,  divorced),(ocupacion,  handlers-cleaners),(relacion,  unmarried),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
-<<<<<<< HEAD
-(y,[(edad,edad-media),(workclass,  private),(educacion,  bachelors),(marital-status,  married-civ-spouse),(ocupacion,  exec-managerial),(relacion,  husband),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
-=======
 (y,[(edad,edad-media),(workclass,  private),(educacion,  bachelors),(marital-status,  married-civ-spouse),(ocupacion,  exec-managerial),(relacion,  husband),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)])
->>>>>>> ee0e2af3bbd7467974736e75dac046c8174c7526
+]).

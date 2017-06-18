@@ -127,4 +127,8 @@
 (n,[(edad,edad-media),(workclass,  private),(educacion,  some-college),(marital-status,  divorced),(ocupacion,  craft-repair),(relacion,  not-in-family),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (y,[(edad,edad-media),(workclass,  federal-gov),(educacion,  masters),(marital-status,  never-married),(ocupacion,  exec-managerial),(relacion,  not-in-family),(raza,  white),(sexo,  female),(capital-gain, si),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (y,[(edad,edad-media),(workclass,  private),(educacion,  masters),(marital-status,  married-civ-spouse),(ocupacion,  prof-specialty),(relacion,  other-relative),(raza,  white),(sexo,  male),(capital-gain, si),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
+<<<<<<< HEAD
 (n,[(edad,joven),(workclass,  self-emp-not-inc),(educacion,  hs-grad),(marital-status,  never-married),(ocupacion,  sales),(relacion,  not-in-family),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
+=======
+(n,[(edad,joven),(workclass,  self-emp-not-inc),(educacion,  hs-grad),(marital-status,  never-married),(ocupacion,  sales),(relacion,  not-in-family),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)])
+>>>>>>> ee0e2af3bbd7467974736e75dac046c8174c7526
