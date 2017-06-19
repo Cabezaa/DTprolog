@@ -1,6 +1,6 @@
 %Sin Podar
 crearArbol(Atributos,Datos):-
-    id3( Atributos, Datos, ArbolSalida ),print("SALI EXITOSO"),!,
+    id3( Atributos, Datos, ArbolSalida ),!,
     assert(ArbolSalida), print("Se ha creado el arbol correctamente"),nl.
 
 utilizarArbol(DatosTest1):-
@@ -48,7 +48,10 @@ auxiliar(Atributo,Valor,AtributosValores,ValorReal):-
                %print("V"),nl,print(Valor),nl,print("lo logre"),nl,
                clasificarAux(R,RamasDeR, AtributosValores,ValorReal)
                %Aca sumar
-           ;  print("la fila a clasificar tiene valores falsos"))
+           ;
+           print("###"),nl,
+           print("No se puede clasificar esa fila!"),nl,
+           print("###"),nl)
        ;
        print(Atributo),print(" no es raiz del arbol"),nl,nl).
 
@@ -147,8 +150,8 @@ particionamiento( Datos, Atributo, [ OnePosAttrValue | OtrosValores ], Particion
     %print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"),
     %print("SubEntropy de "),print(Atributo),print(" ES "),print(SubEntropy),nl,
     length(Datos,FilasTotales),
-    particionamiento( Datos, Atributo, OtrosValores , RestPartition, AcumuladorEntropia ),
-    Particion = [ OnePosAttrValue-DatosAtributoValor | RestPartition ],
+    particionamiento( Datos, Atributo, OtrosValores , RestoParticion, AcumuladorEntropia ),
+    Particion = [ OnePosAttrValue-DatosAtributoValor | RestoParticion ],
 
     %Calculamos la Entropia
     length(DatosAtributoValor,FilasCalculadas),

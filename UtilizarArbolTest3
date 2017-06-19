@@ -1,3 +1,4 @@
+utilizarArbol([
 (n,[(edad,joven),(workclass,  private),(educacion,  some-college),(marital-status,  never-married),(ocupacion,  handlers-cleaners),(relacion,  own-child),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  private),(educacion,  some-college),(marital-status,  never-married),(ocupacion,  other-service),(relacion,  not-in-family),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (y,[(edad,edad-media),(workclass,  private),(educacion,  masters),(marital-status,  married-civ-spouse),(ocupacion,  exec-managerial),(relacion,  husband),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, si),(horas-por-semana, excesivo),(pais, nacional)]),
@@ -96,3 +97,4 @@
 (n,[(edad,edad-media),(workclass,  private),(educacion,  hs-grad),(marital-status,  never-married),(ocupacion,  sales),(relacion,  own-child),(raza,  white),(sexo,  male),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  private),(educacion,  some-college),(marital-status,  never-married),(ocupacion,  tech-support),(relacion,  not-in-family),(raza,  white),(sexo,  male),(capital-gain, si),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)]),
 (n,[(edad,edad-media),(workclass,  private),(educacion,  bachelors),(marital-status,  never-married),(ocupacion,  prof-specialty),(relacion,  not-in-family),(raza,  white),(sexo,  female),(capital-gain, no),(capital-loss, no),(horas-por-semana, excesivo),(pais, nacional)])
+]).
